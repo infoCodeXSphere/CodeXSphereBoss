@@ -2,8 +2,9 @@
   "name": "@cbos/shared",
   "version": "1.0.0",
   "private": true,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "zod": "^3.23.8"
   },
@@ -11,6 +12,6 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "build": "tsc --noEmit"
+    "build": "tsc -p tsconfig.json"
   }
 }

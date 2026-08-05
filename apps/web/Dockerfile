@@ -8,6 +8,10 @@ RUN npm install --workspaces --include-workspace-root
 FROM base AS build
 COPY packages/shared packages/shared
 COPY apps/web apps/web
+
+WORKDIR /repo/packages/shared
+RUN npm run build
+
 WORKDIR /repo/apps/web
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
