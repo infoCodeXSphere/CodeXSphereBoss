@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cbos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cbos_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-cbos}
+    ports:
+      - "5432:5432"
+    volumes:
+      - cbos_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cbos}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cbos}:${POSTGRES_PASSWORD:-cbos_dev_password}@postgres:5432/${POSTGRES_DB:-cbos}?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-CodeXSphere <infocodexsphere@gmail.com>}
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-cbos-documents}
+      API_PORT: 4000
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    volumes:
+      - cbos_storage:/app/storage
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  cbos_postgres_data:
+  cbos_storage:

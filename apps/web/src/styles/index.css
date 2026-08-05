@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: "Inter", sans-serif;
+}
+
+.font-display {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+/* Simple, dependency-free drag-and-drop affordance for the Kanban
+   board — native HTML5 drag events, no external DnD library needed
+   for a single-column-reorder use case like this. */
+[draggable="true"] {
+  cursor: grab;
+}
+[draggable="true"]:active {
+  cursor: grabbing;
+}
+.kanban-drop-target {
+  outline: 2px dashed theme("colors.brand.indigo");
+  outline-offset: -2px;
+}
