@@ -1,8 +1,7 @@
-# --------------------------------------------------------------
-# Build stage: install everything and compile the TypeScript API
-# --------------------------------------------------------------
 FROM node:20-alpine AS build
 WORKDIR /repo
+
+RUN apk add --no-cache openssl
 
 COPY package.json package-lock.json* ./
 COPY apps/api/package.json apps/api/package.json
@@ -19,18 +18,10 @@ WORKDIR /repo/apps/api
 RUN npx prisma generate
 RUN npm run build
 
-# --------------------------------------------------------------
-# Runtime stage
-# --------------------------------------------------------------
-# npm workspaces hoist shared dependencies to the ROOT node_modules
-# folder (/repo/node_modules), not a per-package one — there is no
-# /repo/apps/api/node_modules to copy in isolation. Copying the whole
-# /repo directory (not just isolated subfolders) sidesteps that
-# entirely and is the reliable approach for a workspaces monorepo,
-# at the cost of a slightly larger image than a hand-picked copy.
 FROM node:20-alpine AS runtime
 WORKDIR /repo
 ENV NODE_ENV=production
+RUN apk add --no-cache openssl
 COPY --from=build /repo /repo
 WORKDIR /repo/apps/api
 RUN mkdir -p storage
