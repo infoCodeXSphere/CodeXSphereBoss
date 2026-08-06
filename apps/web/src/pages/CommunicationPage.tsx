@@ -69,7 +69,7 @@ export function CommunicationPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Communication Center</h1>
           <p className="text-sm text-white/40 mt-1">Meetings and emails, in one chronological feed.</p>

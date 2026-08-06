@@ -120,7 +120,7 @@ export function QuotationsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Quotation Generator</h1>
           <p className="text-sm text-white/40 mt-1">Line items, tax, and discount — calculated and PDF'd automatically.</p>
@@ -141,7 +141,7 @@ export function QuotationsPage() {
       <div className="space-y-2">
         {quotations?.map((q) => (
           <Card key={q.id}>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div>
                 <div className="text-sm font-medium text-white">
                   {q.client?.name} {q.client?.company ? `· ${q.client.company}` : ""}

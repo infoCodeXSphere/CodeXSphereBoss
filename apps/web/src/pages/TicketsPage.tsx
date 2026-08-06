@@ -89,7 +89,7 @@ export function TicketsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Support Tickets</h1>
           <p className="text-sm text-white/40 mt-1">Client support requests, tracked to resolution.</p>
@@ -110,7 +110,7 @@ export function TicketsPage() {
       <div className="space-y-2">
         {tickets?.map((t) => (
           <Card key={t.id}>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div className="min-w-0">
                 <div className="text-sm font-medium text-white truncate">{t.subject}</div>
                 <div className="text-xs text-white/40 mt-0.5 truncate">

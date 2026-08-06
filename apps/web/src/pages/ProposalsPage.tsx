@@ -107,7 +107,7 @@ export function ProposalsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Proposal Generator</h1>
           <p className="text-sm text-white/40 mt-1">Every proposal here has a real, downloadable branded PDF attached.</p>
@@ -128,7 +128,7 @@ export function ProposalsPage() {
       <div className="space-y-2">
         {proposals?.map((p) => (
           <Card key={p.id}>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div>
                 <div className="text-sm font-medium text-white">{p.title}</div>
                 <div className="text-xs text-white/40 mt-0.5">

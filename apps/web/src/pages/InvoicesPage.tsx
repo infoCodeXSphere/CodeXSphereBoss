@@ -89,7 +89,7 @@ export function InvoicesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Invoice Management</h1>
           <p className="text-sm text-white/40 mt-1">Real financial totals, not sample numbers.</p>
@@ -118,7 +118,7 @@ export function InvoicesPage() {
       <div className="space-y-2">
         {invoices?.map((inv) => (
           <Card key={inv.id}>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
               <div>
                 <div className="text-sm font-medium text-white">
                   {inv.client?.name} {inv.client?.company ? `· ${inv.client.company}` : ""}

@@ -16,7 +16,7 @@ export function LeadsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-3">
         <div>
           <h1 className="font-display text-xl font-semibold">Smart CRM</h1>
           <p className="text-sm text-white/40 mt-1">Every website enquiry lands here automatically, scored and assigned.</p>
@@ -44,8 +44,8 @@ export function LeadsPage() {
         </select>
       </div>
 
-      <div className="border border-white/10 rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="border border-white/10 rounded-2xl overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="bg-white/[0.03] text-white/50 text-xs uppercase tracking-wide">
               <th className="text-left px-4 py-3 font-medium">Name</th>

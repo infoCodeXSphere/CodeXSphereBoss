@@ -44,7 +44,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center pt-32" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center px-4 pt-20 sm:pt-32" onClick={onClose}>
       <div className="w-full max-w-lg bg-[#141924] border border-white/10 rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <input
           autoFocus
