@@ -23,6 +23,8 @@ import { meetingRouter } from "./routes/meetingRoutes.js";
 import { userRouter } from "./routes/userRoutes.js";
 import { auditLogRouter } from "./routes/auditLogRoutes.js";
 import { aiAssistantRouter } from "./routes/aiAssistantRoutes.js";
+import { adminRouter } from "./routes/adminRoutes.js";
+import { communicationRouter } from "./routes/communicationRoutes.js";
 
 export function createApp() {
   const app = express();
@@ -68,6 +70,8 @@ export function createApp() {
   app.use("/api/users", userRouter);
   app.use("/api/audit-logs", auditLogRouter);
   app.use("/api/ai", aiAssistantRouter);
+  app.use("/api/admin", adminRouter);
+  app.use("/api/communications", communicationRouter);
 
   app.use((_req, res) => res.status(404).json({ error: "Not found" }));
   app.use(errorHandler);

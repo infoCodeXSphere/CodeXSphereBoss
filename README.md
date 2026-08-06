@@ -22,16 +22,16 @@ fully built has a clear status and a pointer to what's needed to finish it.
 | 4 | Sales Pipeline | ✅ **Live** | Kanban board, drag-and-drop stage changes, backed by real API |
 | 5 | Client Management | ✅ **Live** | Convert lead → client, client profile with linked projects/invoices/etc. |
 | 6 | Client Portal | 🏗️ **Schema only** | `User.clientId` + `Role.CLIENT` exist for this; no portal UI built yet |
-| 7 | Project Management | 🟡 **API live, UI pending** | Full CRUD for projects/tasks/milestones; no dashboard page yet |
-| 8 | Proposal Generator | 🟡 **API live, UI pending** | Generates a real branded PDF; no dedicated frontend page yet |
-| 9 | Quotation Generator | 🟡 **API live, UI pending** | Real line-item calc + PDF; QR code is a documented future hook |
-| 10 | Invoice Management | 🟡 **API live, UI pending** | Real CRUD + financial summary; payment gateway not integrated |
-| 11 | Document Management | 🟡 **API live, UI pending** | Real file upload; local disk (dev) or Supabase Storage (production) — see "Database & Storage" below |
+| 7 | Project Management | ✅ **Live** | Full CRUD for projects/tasks/milestones, with a real dashboard page (expandable task management) |
+| 8 | Proposal Generator | ✅ **Live** | Generates a real branded PDF from a dedicated frontend form |
+| 9 | Quotation Generator | ✅ **Live** | Real line-item calc + PDF from a dedicated frontend form; QR code is a documented future hook |
+| 10 | Invoice Management | ✅ **Live** | Real CRUD + financial summary dashboard; payment gateway not integrated |
+| 11 | Document Management | ✅ **Live** | Real file upload from a dedicated page; local disk (dev) or Supabase Storage (production) — see "Database & Storage" below |
 | 12 | AI Business Assistant | ✅ **Live** | A few question types answered from real data directly; open-ended needs an AI key |
-| 13 | Communication Center | 🏗️ **Schema only** | `Meeting` + `EmailLog` models exist; no unified inbox UI |
+| 13 | Communication Center | ✅ **Live** | Unified chronological feed combining Meetings and Email Logs, plus a meeting-scheduling form |
 | 14 | Notification Center | ✅ **Live** | In-app notifications, bell dropdown + full page, auto-created on new leads |
-| 15 | Analytics | 🟡 **API live, UI partial** | Dashboard page has real charts for leads/revenue; deeper reports pending |
-| 16 | Admin Panel | 🏗️ **Schema only** | `ServiceOffering`/`IndustryOption` models exist for future admin-managed lookups |
+| 15 | Analytics | ✅ **Live** | Dedicated Analytics page with sales funnel, conversion, and financial charts, on top of the Dashboard's lead/revenue charts |
+| 16 | Admin Panel | ✅ **Live** | Manage Services and Industries (the lookups behind CRM dropdowns and the website's contact form) directly from the UI |
 
 **Legend:** ✅ Live = built and working end-to-end. 🟡 API live, UI pending = the backend route is
 real and callable today (via Postman/curl or Prisma Studio); a dedicated frontend page hasn't been
@@ -191,6 +191,13 @@ browser will block the request.
 ---
 
 ## Security posture
+
+- Refresh-token cookie uses `sameSite: "none"` (with `secure: true`) in production because the
+  dashboard and API are typically deployed on two different subdomains (different origins). If
+  you ever deploy them under the *same* domain (e.g. `app.yourdomain.com` and
+  `api.yourdomain.com` behind one reverse proxy path, or genuinely the same origin), `sameSite:
+  "lax"` would be the more restrictive, slightly safer choice — the code checks `NODE_ENV`, not
+  the actual domain relationship, so this is a manual judgment call if your topology changes.
 
 - Passwords hashed with bcrypt (12 rounds).
 - JWT access tokens (short-lived, 15 min default) + refresh tokens (httpOnly cookie, rotated on

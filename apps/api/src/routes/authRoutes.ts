@@ -17,6 +17,32 @@ export const authRouter = Router();
 const REFRESH_COOKIE = "cbos_refresh_token";
 const isProd = process.env.NODE_ENV === "production";
 
+/**
+ * The dashboard (e.g. elegant-peace-....railway.app) and the API
+ * (e.g. codexsphereboss-....railway.app) are deployed on two
+ * different Railway subdomains — different origins, from the
+ * browser's point of view. A cookie set with `sameSite: "lax"` is
+ * only ever sent back on same-site requests or top-level navigations
+ * — a background fetch() from the dashboard's JS to the API's
+ * /auth/refresh endpoint is neither, so the browser silently drops
+ * the cookie. That's why a page reload (or reconnecting after the
+ * tab was closed) previously bounced straight to the login screen
+ * instead of restoring the session: the refresh call was firing, but
+ * arriving with no cookie attached, every single time.
+ *
+ * `sameSite: "none"` explicitly allows the cookie on cross-site
+ * requests. Browsers require `secure: true` alongside it — Railway
+ * serves everything over HTTPS in production, so that's satisfied;
+ * locally in dev, the Vite proxy makes frontend and API same-origin
+ * anyway, so "lax" still works there.
+ */
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+  path: "/api/auth",
+};
+
 authRouter.post(
   "/login",
   asyncHandler(async (req, res) => {
@@ -35,13 +61,7 @@ authRouter.post(
     const accessToken = signAccessToken({ sub: user.id, role: user.role, email: user.email });
     const refreshToken = await issueRefreshToken(user.id);
 
-    res.cookie(REFRESH_COOKIE, refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/api/auth",
-    });
+    res.cookie(REFRESH_COOKIE, refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
     await logAudit({ userId: user.id, action: "user.login", entityType: "User", entityId: user.id, ipAddress: req.ip });
 
@@ -66,13 +86,7 @@ authRouter.post(
 
     const accessToken = signAccessToken({ sub: user.id, role: user.role, email: user.email });
 
-    res.cookie(REFRESH_COOKIE, rotated.newRaw, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/api/auth",
-    });
+    res.cookie(REFRESH_COOKIE, rotated.newRaw, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
     res.json({ accessToken });
   })

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput, type Role } from "@cbos/shared";
 import { api } from "../lib/api";
 import { useAuthStore } from "../store/authStore";
+import logoMark from "../assets/logo-mark.png";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -32,10 +33,10 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#0B0E14] text-white px-6">
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-2 mb-8 justify-center">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-indigo to-brand-violet" />
+          <img src={logoMark} alt="CodeXSphere" className="w-9 h-auto" />
           <div>
             <div className="font-display font-semibold leading-none">CBOS</div>
-            <div className="text-[10px] text-white/40">CodeSphere Business OS</div>
+            <div className="text-[10px] text-white/40">CodeXSphere Business OS</div>
           </div>
         </div>
 

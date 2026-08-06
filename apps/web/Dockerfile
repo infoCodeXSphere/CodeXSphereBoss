@@ -19,6 +19,11 @@ RUN npm run build
 
 FROM nginx:alpine AS runtime
 COPY --from=build /repo/apps/web/dist /usr/share/nginx/html
+# Using nginx's built-in template mechanism (/etc/nginx/templates/*.template
+# gets processed with envsubst automatically on container start) instead of
+# a static config — Railway assigns a random port via the PORT environment
+# variable at runtime, so the config can't hardcode "listen 80" and expect
+# Railway's proxy to find it.
 COPY apps/web/nginx.conf /etc/nginx/templates/default.conf.template
 ENV PORT=80
 EXPOSE 80

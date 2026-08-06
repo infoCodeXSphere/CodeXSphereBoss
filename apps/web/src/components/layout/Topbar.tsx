@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Bell, Moon, Sun, Search, LogOut } from "lucide-react";
+import { Bell, Moon, Sun, Search, LogOut, RefreshCw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/authStore";
 import { useNotifications, useMarkAllRead } from "../../hooks/useNotifications";
 import { api } from "../../lib/api";
@@ -10,9 +11,11 @@ export function Topbar() {
   const clearSession = useAuthStore((s) => s.clearSession);
   const { data } = useNotifications();
   const markAllRead = useMarkAllRead();
+  const queryClient = useQueryClient();
   const [notifOpen, setNotifOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [dark, setDark] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const toggleTheme = () => {
     setDark((d) => !d);
@@ -22,6 +25,21 @@ export function Topbar() {
   const handleLogout = async () => {
     await api.post("/auth/logout");
     clearSession();
+  };
+
+  /**
+   * Re-fetches every query currently mounted on the page (leads,
+   * pipeline, invoices, whatever's showing) without a browser
+   * navigation or full page reload — the in-memory access token, any
+   * unsaved form state, and scroll position all stay exactly where
+   * they were. A hard browser refresh (F5) works fine too now that
+   * the cross-origin cookie bug is fixed, but this is faster and
+   * doesn't briefly flash a loading screen.
+   */
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries();
+    setRefreshing(false);
   };
 
   return (
@@ -36,6 +54,16 @@ export function Topbar() {
       </button>
 
       <div className="flex items-center gap-4">
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="text-white/60 hover:text-white disabled:opacity-50"
+          aria-label="Refresh data"
+          title="Refresh data on this page"
+        >
+          <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
+        </button>
+
         <button onClick={toggleTheme} className="text-white/60 hover:text-white" aria-label="Toggle theme">
           {dark ? <Sun size={17} /> : <Moon size={17} />}
         </button>
